@@ -54,6 +54,13 @@ jobs:
           compressed = compressed[:3] + bytes([16]) + compressed[4:10] + b'UnityWeb Compressed Content (gzip)\x00' + compressed[10:]
           data_path.write_bytes(compressed)
           patch_path.unlink()
+          index_path = pathlib.Path('_site/index.html')
+          html = index_path.read_text()
+          for asset in pathlib.Path('_site/Build').iterdir():
+              renamed = 'level1v2-' + asset.name
+              html = html.replace('Build/' + asset.name, 'Build/' + renamed)
+              asset.rename(asset.with_name(renamed))
+          index_path.write_text(html)
           PY
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
