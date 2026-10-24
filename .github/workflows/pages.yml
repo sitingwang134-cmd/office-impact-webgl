@@ -1,0 +1,44 @@
+name: Deploy Unity WebGL
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: false
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify and unpack complete runtime
+        run: |
+          python3 - <<'PY'
+          import hashlib, json, pathlib, tarfile
+          manifest = json.loads(pathlib.Path('release-manifest.json').read_text())
+          with open('game.tar.gz', 'wb') as output:
+              for part in manifest['parts']:
+                  data = pathlib.Path(part['file']).read_bytes()
+                  assert len(data) == part['bytes'], part['file']
+                  assert hashlib.sha256(data).hexdigest() == part['sha256'], part['file']
+                  output.write(data)
+          assert hashlib.sha256(pathlib.Path('game.tar.gz').read_bytes()).hexdigest() == manifest['archive_sha256']
+          pathlib.Path('_site').mkdir(exist_ok=True)
+          with tarfile.open('game.tar.gz') as archive:
+              archive.extractall('_site', filter='data')
+          assert pathlib.Path('_site/index.html').is_file()
+          PY
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v5
