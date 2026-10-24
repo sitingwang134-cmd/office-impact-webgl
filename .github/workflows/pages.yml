@@ -50,7 +50,9 @@ jobs:
               value = bytes.fromhex(value)
               data[offset:offset + len(value)] = value
           assert hashlib.sha256(data).hexdigest() == patch['result']
-          data_path.write_bytes(gzip.compress(data, compresslevel=9, mtime=0))
+          compressed = gzip.compress(data, compresslevel=9, mtime=0)
+          compressed = compressed[:3] + bytes([16]) + compressed[4:10] + b'UnityWeb Compressed Content (gzip)\x00' + compressed[10:]
+          data_path.write_bytes(compressed)
           patch_path.unlink()
           PY
       - uses: actions/configure-pages@v5
