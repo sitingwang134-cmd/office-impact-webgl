@@ -35,6 +35,24 @@ jobs:
               archive.extractall('_site', filter='data')
           assert pathlib.Path('_site/index.html').is_file()
           PY
+      - name: Apply level one update
+        run: |
+          python3 - <<'PY'
+          import gzip, hashlib, json, pathlib, tarfile
+          with tarfile.open('level-one-update.tar.gz') as archive:
+              archive.extractall('_site', filter='data')
+          patch_path = pathlib.Path('_site/data-patch.json')
+          patch = json.loads(patch_path.read_text())
+          data_path = pathlib.Path('_site/Build/web.data.unityweb')
+          data = bytearray(gzip.decompress(data_path.read_bytes()))
+          assert hashlib.sha256(data).hexdigest() == patch['base']
+          for offset, value in patch['spans']:
+              value = bytes.fromhex(value)
+              data[offset:offset + len(value)] = value
+          assert hashlib.sha256(data).hexdigest() == patch['result']
+          data_path.write_bytes(gzip.compress(data, compresslevel=9, mtime=0))
+          patch_path.unlink()
+          PY
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
