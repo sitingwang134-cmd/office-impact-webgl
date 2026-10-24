@@ -1,0 +1,30 @@
+{
+  "archive_sha256": "79413dc3b38c976513e68c7cd8e170466e5caef8e7b567fd2b56f6c8b4bc63b9",
+  "parts": [
+    {
+      "file": "game.tar.gz.part00",
+      "bytes": 20971520,
+      "sha256": "bb23cbce0eace4d643559164cece8d673b165deffc85c43577ba8b41342711ba"
+    },
+    {
+      "file": "game.tar.gz.part01",
+      "bytes": 20971520,
+      "sha256": "923cda8c867a1b4dd7bff01510304b454e2537379fb9cd752bf336d1874cbdd2"
+    },
+    {
+      "file": "game.tar.gz.part02",
+      "bytes": 20971520,
+      "sha256": "21efbe395a457f7eb4d564ebddd807e178e801626d9ee08d6d815f61c614fbc7"
+    },
+    {
+      "file": "game.tar.gz.part03",
+      "bytes": 20971520,
+      "sha256": "b66f37a8ae11f1037728862eee6adcb6f5bbbd3a5b2d011284058e201f724744"
+    },
+    {
+      "file": "game.tar.gz.part04",
+      "bytes": 17876060,
+      "sha256": "0bdb983037484febe2d312b90f96c3f7c1b7f9ad025e97d63a82a1a5398dab1c"
+    }
+  ]
+}
