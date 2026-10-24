@@ -57,7 +57,7 @@ jobs:
           index_path = pathlib.Path('_site/index.html')
           html = index_path.read_text()
           for asset in pathlib.Path('_site/Build').iterdir():
-              renamed = 'interactionv3-' + asset.name
+              renamed = 'interactionv4-' + asset.name
               html = html.replace('Build/' + asset.name, 'Build/' + renamed)
               asset.rename(asset.with_name(renamed))
           index_path.write_text(html)
